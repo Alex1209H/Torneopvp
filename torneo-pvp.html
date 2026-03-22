@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Torneo PVP - 400 RBX</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #FFD700;
+    --gold2: #FFA500;
+    --red: #FF3333;
+    --dark: #0a0a0f;
+    --darker: #050508;
+    --panel: #11111a;
+    --border: #2a2a3a;
+    --silver: #C0C0C0;
+    --bronze: #cd7f32;
+    --glow: rgba(255,215,0,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--darker);
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Fondo animado */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 40% at 50% -10%, rgba(255,60,60,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 30% at 80% 90%, rgba(255,180,0,0.08) 0%, transparent 50%),
+      repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px),
+      repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 20px; }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 30px 20px 20px;
+    position: relative;
+  }
+
+  .header::after {
+    content: '';
+    display: block;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--red), var(--gold), transparent);
+    margin-top: 20px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--red);
+    border: 1px solid var(--red);
+    padding: 3px 12px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 10vw, 90px);
+    line-height: 0.9;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, #fff 30%, var(--gold) 60%, var(--gold2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    filter: drop-shadow(0 0 30px rgba(255,200,0,0.3));
+  }
+
+  .subtitle {
+    font-size: 14px;
+    letter-spacing: 6px;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  /* PREMIOS */
+  .prizes-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 28px 0;
+  }
+
+  .prize-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 22px 18px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+
+  .prize-card:hover { transform: translateY(-2px); }
+
+  .prize-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .prize-card.gold::before { background: linear-gradient(90deg, var(--gold2), var(--gold)); }
+  .prize-card.silver::before { background: linear-gradient(90deg, #888, var(--silver)); }
+
+  .prize-card.gold {
+    box-shadow: 0 0 40px rgba(255,215,0,0.08), inset 0 0 40px rgba(255,180,0,0.04);
+  }
+
+  .prize-rank {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    opacity: 0.5;
+    margin-bottom: 6px;
+  }
+
+  .prize-card.gold .prize-rank { color: var(--gold); }
+  .prize-card.silver .prize-rank { color: var(--silver); }
+
+  .prize-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 46px;
+    line-height: 1;
+    letter-spacing: 2px;
+  }
+
+  .prize-card.gold .prize-amount { color: var(--gold); }
+  .prize-card.silver .prize-amount { color: var(--silver); }
+
+  .prize-label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    opacity: 0.45;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .prize-trophy {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 36px;
+    opacity: 0.15;
+  }
+
+  /* INFO GRID */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .info-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    text-align: center;
+  }
+
+  .info-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .info-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--gold);
+  }
+
+  /* BRACKET */
+  .bracket-section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 24px 20px;
+    margin-bottom: 28px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 5px;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .bracket-wrapper {
+    display: flex;
+    gap: 0;
+    align-items: center;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .round {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 140px;
+  }
+
+  .round-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.25);
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .matches-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    flex: 1;
+  }
+
+  .match-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 6px 0;
+  }
+
+  .match-slot {
+    background: #0d0d16;
+    border: 1px solid var(--border);
+    padding: 7px 10px;
+    width: 130px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.55);
+    position: relative;
+    transition: all 0.2s;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .match-slot:hover {
+    border-color: rgba(255,215,0,0.4);
+    color: #fff;
+    background: rgba(255,215,0,0.05);
+  }
+
+  .match-slot.winner {
+    border-color: rgba(255,215,0,0.5);
+    color: var(--gold);
+    background: rgba(255,180,0,0.06);
+  }
+
+  .match-slot.runner {
+    border-color: rgba(192,192,192,0.4);
+    color: var(--silver);
+    background: rgba(192,192,192,0.04);
+  }
+
+  .match-slot input {
+    background: none;
+    border: none;
+    outline: none;
+    color: inherit;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    width: 100%;
+  }
+
+  .match-slot input::placeholder { color: rgba(255,255,255,0.2); }
+
+  .vs-divider {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--red);
+    opacity: 0.6;
+    padding: 2px 0;
+  }
+
+  .connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+  }
+
+  /* FINAL */
+  .final-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 10px;
+  }
+
+  .final-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+
+  .champion-box {
+    background: rgba(255,180,0,0.07);
+    border: 1px solid rgba(255,215,0,0.4);
+    padding: 14px 16px;
+    width: 150px;
+    text-align: center;
+    position: relative;
+  }
+
+  .champion-box::before {
+    content: '👑';
+    display: block;
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .champion-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    opacity: 0.6;
+    margin-bottom: 4px;
+  }
+
+  .champion-box input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--gold);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .champion-box input::placeholder { color: rgba(255,215,0,0.3); font-size: 13px; }
+
+  .runner-box {
+    background: rgba(192,192,192,0.04);
+    border: 1px solid rgba(192,192,192,0.3);
+    padding: 10px 14px;
+    width: 150px;
+    text-align: center;
+    margin-top: 12px;
+  }
+
+  .runner-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--silver);
+    opacity: 0.5;
+    margin-bottom: 4px;
+  }
+
+  .runner-box input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--silver);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 2px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .runner-box input::placeholder { color: rgba(192,192,192,0.25); font-size: 11px; }
+
+  /* PARTICIPANTES */
+  .players-section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 24px 20px;
+    margin-bottom: 28px;
+  }
+
+  .players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 8px;
+  }
+
+  .player-slot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #0d0d16;
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    transition: all 0.2s;
+  }
+
+  .player-slot:hover { border-color: rgba(255,215,0,0.25); }
+
+  .player-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    color: rgba(255,255,255,0.2);
+    min-width: 20px;
+  }
+
+  .player-slot input {
+    background: none;
+    border: none;
+    outline: none;
+    color: rgba(255,255,255,0.7);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    width: 100%;
+  }
+
+  .player-slot input::placeholder { color: rgba(255,255,255,0.15); }
+
+  /* REGLAS */
+  .rules-section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 24px 20px;
+    margin-bottom: 28px;
+  }
+
+  .rule-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .rule-item:last-child { border-bottom: none; }
+
+  .rule-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    color: var(--red);
+    min-width: 22px;
+    opacity: 0.7;
+  }
+
+  .rule-text {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.5;
+    letter-spacing: 0.3px;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 16px;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.12);
+    text-transform: uppercase;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Animaciones */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .header { animation: fadeUp 0.5s ease both; }
+  .prizes-section { animation: fadeUp 0.5s 0.1s ease both; }
+  .info-grid { animation: fadeUp 0.5s 0.2s ease both; }
+  .bracket-section { animation: fadeUp 0.5s 0.3s ease both; }
+  .players-section { animation: fadeUp 0.5s 0.4s ease both; }
+  .rules-section { animation: fadeUp 0.5s 0.5s ease both; }
+
+  @media (max-width: 600px) {
+    .prizes-section { grid-template-columns: 1fr; }
+    .info-grid { grid-template-columns: repeat(3, 1fr); }
+    .prize-amount { font-size: 38px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="tag">⚔ Evento Oficial</div>
+    <div class="title">TORNEO<br>PVP</div>
+    <div class="subtitle">Roblox · Eliminación Directa</div>
+  </div>
+
+  <!-- PREMIOS -->
+  <div class="prizes-section">
+    <div class="prize-card gold">
+      <div class="prize-rank">🥇 Primer Lugar</div>
+      <div class="prize-amount">400</div>
+      <div class="prize-label">Robux · Premio Principal</div>
+      <div class="prize-trophy">🏆</div>
+    </div>
+    <div class="prize-card silver">
+      <div class="prize-rank">🥈 Segundo Lugar</div>
+      <div class="prize-amount">20</div>
+      <div class="prize-label">Robux · Consolación</div>
+      <div class="prize-trophy">🎖</div>
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div class="info-grid">
+    <div class="info-box">
+      <div class="info-label">Participantes</div>
+      <div class="info-value">14+</div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Formato</div>
+      <div class="info-value">1v1</div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Premio Total</div>
+      <div class="info-value">420 R$</div>
+    </div>
+  </div>
+
+  <!-- BRACKET -->
+  <div class="bracket-section">
+    <div class="section-title">Bracket del Torneo</div>
+    <div class="bracket-wrapper">
+
+      <!-- Ronda 1 (7 partidas) -->
+      <div>
+        <div class="round-title">Ronda 1</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="match-group">
+            <div class="match-slot"><input placeholder="Jugador 1" /></div>
+            <div class="vs-divider">VS</div>
+            <div class="match-slot"><input placeholder="Jugador 2" /></div>
+          </div>
+          <div class="match-group">
+            <div class="match-slot"><input placeholder="Jugador 3" /></div>
+            <div class="vs-divider">VS</div>
+            <div class="match-slot"><input placeholder="Jugador 4" /></div>
+          </div>
+          <div class="match-group">
+            <div class="match-slot"><input placeholder="Jugador 5" /></div>
+            <div class="vs-divider">VS</div>
+            <div class="match-slot"><input placeholder="Jugador 6" /></div>
+          </div>
+          <div class="match-group">
+            <div class="match-slot"><input placeholder="Jugador 7" /></div>
+            <div class="vs-divider">VS</div>
+            <div class="match-slot"><input placeholder="Jugador 8" /></div>
+          </div>
+          <div class="match-group">
+            <div class="match-slot"><input placeholder="Jugador 9" /></div>
+            <div class="vs-divider">VS</div>
+            <div class="match-slot"><input placeholder="Jugador 10" /></div>
+          </div>
+          <div class="match-group">
+            <div class="match-slot"><input placeholder="Jugador 11" /></div>
+            <div class="vs-divider">VS</div>
+            <div class="match-slot"><input placeholder="Jugador 12" /></div>
+          </div>
+          <div class="match-group" style="opacity:0.6;">
+            <div class="match-slot"><input placeholder="Jugador 13" /></div>
+            <div class="vs-divider">VS</div>
+            <div class="match-slot"><input placeholder="Jugador 14" /></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flecha -->
+      <div style="display:flex;align-items:center;padding:0 8px;color:rgba(255,215,0,0.2);font-family:'Bebas Neue';font-size:22px;margin-top:28px;">›</div>
+
+      <!-- Cuartos -->
+      <div>
+        <div class="round-title">Cuartos</div>
+        <div style="display:flex;flex-direction:column;gap:28px;margin-top:28px;">
+          <div class="match-group">
+            <div class="match-slot winner"><input placeholder="Ganador A" /></div>
+            <div class="vs-divider">VS</div>
+            <div class="match-slot winner"><input placeholder="Ganador B" /></div>
+          </div>
+          <div class="match-group">
+            <div class="match-slot winner"><input placeholder="Ganador C" /></div>
+            <div class="vs-divider">VS</div>
+            <div class="match-slot winner"><input placeholder="Ganador D" /></div>
+          </div>
+          <div class="match-group">
+            <div class="match-slot winner"><input placeholder="Ganador E" /></div>
+            <div class="vs-divider">VS</div>
+            <div class="match-slot winner"><input placeholder="Ganador F" /></div>
+          </div>
+          <div class="match-group">
+            <div class="match-slot winner" style="opacity:0.5"><input placeholder="Bye / Ganador G" /></div>
+            <div class="vs-divider" style="opacity:0">·</div>
+            <div class="match-slot" style="opacity:0; pointer-events:none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flecha -->
+      <div style="display:flex;align-items:center;padding:0 8px;color:rgba(255,215,0,0.2);font-family:'Bebas Neue';font-size:22px;margin-top:28px;">›</div>
+
+      <!-- Semis -->
+      <div>
+        <div class="round-title">Semifinal</div>
+        <div style="display:flex;flex-direction:column;gap:80px;margin-top:80px;">
+          <div class="match-group">
+            <div class="match-slot winner"><input placeholder="Semi 1" /></div>
+            <div class="vs-divider">VS</div>
+            <div class="match-slot winner"><input placeholder="Semi 2" /></div>
+          </div>
+          <div class="match-group">
+            <div class="match-slot winner"><input placeholder="Semi 3" /></div>
+            <div class="vs-divider">VS</div>
+            <div class="match-slot winner"><input placeholder="Semi 4" /></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flecha -->
+      <div style="display:flex;align-items:center;padding:0 8px;color:rgba(255,215,0,0.2);font-family:'Bebas Neue';font-size:22px;margin-top:28px;">›</div>
+
+      <!-- Final -->
+      <div class="final-col" style="margin-top:28px;">
+        <div class="final-title">⚔ Gran Final</div>
+        <div class="match-group" style="margin-bottom:16px;">
+          <div class="match-slot winner"><input placeholder="Finalista 1" /></div>
+          <div class="vs-divider">VS</div>
+          <div class="match-slot runner"><input placeholder="Finalista 2" /></div>
+        </div>
+        <div style="height:16px;border-left:1px dashed rgba(255,215,0,0.2);margin:4px auto;"></div>
+        <div class="champion-box">
+          <div class="champion-label">Campeón · 400 R$</div>
+          <input placeholder="Ganador" />
+        </div>
+        <div class="runner-box">
+          <div class="runner-label">2do lugar · 20 R$</div>
+          <input placeholder="Runner-up" />
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PARTICIPANTES -->
+  <div class="players-section">
+    <div class="section-title">Participantes Inscritos</div>
+    <div class="players-grid">
+      <div class="player-slot"><span class="player-num">01</span><input placeholder="Username..." /></div>
+      <div class="player-slot"><span class="player-num">02</span><input placeholder="Username..." /></div>
+      <div class="player-slot"><span class="player-num">03</span><input placeholder="Username..." /></div>
+      <div class="player-slot"><span class="player-num">04</span><input placeholder="Username..." /></div>
+      <div class="player-slot"><span class="player-num">05</span><input placeholder="Username..." /></div>
+      <div class="player-slot"><span class="player-num">06</span><input placeholder="Username..." /></div>
+      <div class="player-slot"><span class="player-num">07</span><input placeholder="Username..." /></div>
+      <div class="player-slot"><span class="player-num">08</span><input placeholder="Username..." /></div>
+      <div class="player-slot"><span class="player-num">09</span><input placeholder="Username..." /></div>
+      <div class="player-slot"><span class="player-num">10</span><input placeholder="Username..." /></div>
+      <div class="player-slot"><span class="player-num">11</span><input placeholder="Username..." /></div>
+      <div class="player-slot"><span class="player-num">12</span><input placeholder="Username..." /></div>
+      <div class="player-slot"><span class="player-num">13</span><input placeholder="Username..." /></div>
+      <div class="player-slot"><span class="player-num">14</span><input placeholder="Username..." /></div>
+      <div class="player-slot" style="opacity:0.4"><span class="player-num">+</span><input placeholder="Extra slot..." /></div>
+      <div class="player-slot" style="opacity:0.4"><span class="player-num">+</span><input placeholder="Extra slot..." /></div>
+    </div>
+  </div>
+
+  <!-- REGLAS -->
+  <div class="rules-section">
+    <div class="section-title">Reglas</div>
+    <div class="rule-item">
+      <span class="rule-num">01</span>
+      <span class="rule-text">Mínimo 14 participantes para iniciar el torneo. Sin cupo mínimo no hay evento.</span>
+    </div>
+    <div class="rule-item">
+      <span class="rule-num">02</span>
+      <span class="rule-text">El primer lugar recibe 400 RBX. El segundo lugar recibe 20 RBX de consolación. Ambos premios son independientes.</span>
+    </div>
+    <div class="rule-item">
+      <span class="rule-num">03</span>
+      <span class="rule-text">Formato eliminación directa (single elimination). Perder una vez = eliminado.</span>
+    </div>
+    <div class="rule-item">
+      <span class="rule-num">04</span>
+      <span class="rule-text">Presentarse puntual a cada ronda. 5 minutos de espera máximo o se da por perdido el partido.</span>
+    </div>
+    <div class="rule-item">
+      <span class="rule-num">05</span>
+      <span class="rule-text">Queda prohibido el uso de hacks, exploits o cualquier ventaja externa. Descalificación inmediata.</span>
+    </div>
+    <div class="rule-item">
+      <span class="rule-num">06</span>
+      <span class="rule-text">La decisión del organizador es final e inapelable en caso de conflicto.</span>
+    </div>
+  </div>
+
+  <div class="footer">Torneo PVP · Roblox · Todos los derechos reservados al organizador</div>
+
+</div>
+</body>
+</html>
